@@ -53,35 +53,26 @@ public class CellPool : MonoBehaviour
         if (CellMap.Length != childCells.Count)
             throw new Exception("The number of cells does not match the generated code");
 
-        if (HasVisualize())
+        for (int i = 0; i < childCells.Count; i++)
         {
-            for (int i = 0; i < childCells.Count; i++)
-            {
-                var cell = childCells[i];
-
-                cell.Deactivation();
-                cell.Reference();
-
-                if (CellMap[i].State)
-                {
-                    cell.Activation();
-                    cell.SetIndex(i);
-                    cell.SetParentPool(this);
-                }
-            }
+            CellInitialize(childCells[i], i, CellMap[i].State && HasVisualize(), HasVisualize());
         }
-        else
+    }
+
+    private void CellInitialize(ICell cell, int cellIndex, bool isActivate, bool isReference)
+    {
+        cell.Deactivation();
+
+        if (isReference)
+            cell.Reference();
+
+        if (isActivate)
         {
-            for (int i = 0; i < childCells.Count; i++)
-            {
-                var cell = childCells[i];
-
-                cell.Deactivation();
-
-                cell.SetIndex(i);
-                cell.SetParentPool(this);
-            }
+            cell.Activation();
         }
+
+        cell.SetIndex(cellIndex);
+        cell.SetParentPool(this);
     }
 
     protected virtual bool HasVisualize()
